@@ -1,0 +1,144 @@
+/* Keap-inspired global variables for consistent design */
+:root {
+  --keap-primary: #1e7d60;
+  --keap-primary-light: #e6f4ef;
+  --keap-accent: #2e9b76;
+  --keap-bg: #f5f7fa;
+  --keap-card: #fff;
+  --keap-shadow: 0 4px 24px rgba(30, 125, 96, 0.08);
+  --keap-border-radius: 24px;
+  --keap-sidebar-bg: #222b36;
+  --keap-sidebar-active: #1e7d60;
+  --keap-sidebar-text: #fff;
+  --keap-divider: #e0e3e7;
+}
+
+body {
+  background: var(--keap-bg);
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+.keap-card {
+  background: var(--keap-card);
+  border-radius: var(--keap-border-radius);
+  box-shadow: var(--keap-shadow);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.keap-section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--keap-primary);
+  margin-bottom: 16px;
+}
+
+.keap-divider {
+  border-bottom: 1px solid var(--keap-divider);
+  margin: 16px 0;
+}
+
+.keap-btn {
+  background: var(--keap-primary);
+  color: #fff;
+  border-radius: 20px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(30, 125, 96, 0.08);
+  padding: 10px 32px;
+  transition: background 0.2s;
+}
+.keap-btn:hover {
+  background: var(--keap-accent);
+}
+
+.keap-sidebar {
+  background: var(--keap-sidebar-bg);
+  color: var(--keap-sidebar-text);
+  width: 72px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1200;
+}
+
+.keap-sidebar .keap-sidebar-item {
+  width: 48px;
+  height: 48px;
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.keap-sidebar .keap-sidebar-item.active,
+.keap-sidebar .keap-sidebar-item:hover {
+  background: var(--keap-sidebar-active);
+}
+
+.keap-main-content {
+  margin-left: 88px;
+  padding: 32px 24px 24px 24px;
+}
+
+.keap-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 12px;
+  border: 3px solid var(--keap-primary-light);
+}
+
+.keap-list-card {
+  background: var(--keap-card);
+  border-radius: var(--keap-border-radius);
+  box-shadow: var(--keap-shadow);
+  padding: 0;
+  overflow: hidden;
+}
+
+.keap-list-item {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--keap-divider);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.keap-list-item:last-child {
+  border-bottom: none;
+}
+.keap-list-item.active,
+.keap-list-item:hover {
+  background: var(--keap-primary-light);
+}
+
+.keap-list-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 16px;
+}
+
+.keap-list-text {
+  flex: 1;
+  font-size: 1rem;
+  color: #222b36;
+}
+
+.keap-list-badge {
+  background: var(--keap-primary);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  margin-left: 8px;
+}

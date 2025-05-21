@@ -9,23 +9,29 @@ import LoginIcon from '@mui/icons-material/Login';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import '../styles/keap-theme.css';
+import LogoutButton from '../features/logout/LogoutButton';
+import { useAuth } from '../context/AuthContext';
 
 const sidebarLinks = [
-  { text: 'Home', href: '/', icon: <HomeIcon /> },
+  { text: 'Home', href: '/home', icon: <HomeIcon /> },
   { text: 'Products', href: '/products', icon: <StorefrontIcon /> },
   { text: 'Cart', href: '/cart', icon: <ShoppingCartIcon /> },
-  { text: 'Login', href: '/login', icon: <LoginIcon /> },
-  { text: 'Register', href: '/register', icon: <PersonAddIcon /> },
+  // { text: 'Login', href: '/login', icon: <LoginIcon /> },
+  // { text: 'Register', href: '/register', icon: <PersonAddIcon /> },
 ];
 
 const Navbar: React.FC<{ title?: string }> = ({ title }) => {
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const location = useLocation();
-
+  // const isLoggedIn = typeof window !== 'undefined' && localStorage.getItem('auth') === 'true';
+  const { isLoggedIn } = useAuth();
   return (
     <React.Fragment>
       {/* Sidebar */}
       <Box className="keap-sidebar" sx={{ width: { xs: 64, sm: sidebarExpanded ? 220 : 72 }, transition: 'width 0.2s', minHeight: '100vh', bgcolor: 'var(--keap-sidebar-bg)', color: 'var(--keap-sidebar-text)', display: 'flex', flexDirection: 'column', alignItems: 'center', p: 0 }}>
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2, mt: 1 }}>
+          <img src="/logo-buynest.png" alt="BuyNest Logo" style={{ width: 48, height: 48, borderRadius: 12, background: '#fff' }} />
+        </Box>
         <IconButton
           onClick={() => setSidebarExpanded((prev) => !prev)}
           sx={{ color: 'var(--keap-sidebar-text)', mb: 2 }}
@@ -55,12 +61,34 @@ const Navbar: React.FC<{ title?: string }> = ({ title }) => {
               >
                 {link.icon}
                 {sidebarExpanded && (
-                  <ListItemText primary={link.text} sx={{ ml: 2, color: 'var(--keap-sidebar-text)' }} />
+                  // <ListItemText primary={link.text} sx={{ ml: 2, color: 'var(--keap-sidebar-text)' }} />
+                  <ListItemText
+                    primary={
+                      <Box sx={{ ml: 2 }}>
+                        {link.text}
+                      </Box>
+                    }
+                    sx={{ color: 'var(--keap-sidebar-text)' }}
+                  />
                 )}
               </ListItem>
             </Tooltip>
           ))}
         </List>
+        {isLoggedIn && (
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: 24,
+            left: 0,
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <LogoutButton />
+        </Box>
+        )}
       </Box>
       {/* AppBar */}
       {/* <AppBar position="fixed" sx={{ background: 'var(--keap-card)', color: 'var(--keap-primary)', boxShadow: '0 2px 8px rgba(30, 125, 96, 0.08)', zIndex: 1201, left: sidebarExpanded ? 220 : 72, width: `calc(100% - ${sidebarExpanded ? 220 : 72}px)`, transition: 'left 0.2s, width 0.2s' }}>
@@ -71,7 +99,7 @@ const Navbar: React.FC<{ title?: string }> = ({ title }) => {
         </Toolbar>
       </AppBar> */}
       {/* <Toolbar /> */}
-       {/* Spacer for fixed AppBar */}
+      {/* Spacer for fixed AppBar */}
     </React.Fragment>
   );
 };

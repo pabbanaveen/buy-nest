@@ -3,6 +3,7 @@ import { Card, CardContent, Typography, Avatar, Box, Button } from '@mui/materia
 import { Product } from '../../context/CartContext';
 import { useCart } from '../../context/CartContext';
 import QuantityStepper from '../../components/QuantityStepper';
+import KeapButton from '../../components/KeapButton';
 
 interface ProductDetailsProps {
   product: Product;
@@ -14,10 +15,11 @@ interface ProductDetailsProps {
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product, inCart, onAddToCart, onClose }) => {
   const { removeFromCart, cart } = useCart();
   return (
-    <Card className="keap-card" style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+    // <Card className="keap-card" style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+    <>
       <Button
         onClick={onClose}
-        sx={{ position: 'absolute', top: 16, right: 16, minWidth: 0, width: 36, height: 36, borderRadius: '50%', background: '#f5f7fa', color: '#222b36', fontWeight: 700, fontSize: 20, boxShadow: '0 2px 8px rgba(30, 125, 96, 0.08)' }}
+        sx={{ position: 'absolute', top: 25, right: 25, minWidth: 0, width: 36, height: 36, borderRadius: '50%', background: '#f5f7fa', color: '#222b36', fontWeight: 700, fontSize: 20, boxShadow: '0 2px 8px rgba(30, 125, 96, 0.08)' }}
         aria-label="Close details"
       >
         ×
@@ -48,14 +50,15 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, inCart, onAddT
             }}
           />
         ) : (
-          <Button
-            className="keap-btn"
-            style={{ background: inCart ? 'var(--keap-primary)' : undefined }}
-            onClick={() => onAddToCart(product.id)}
-            disabled={inCart}
-          >
-            {inCart ? 'Added to Cart' : 'Add to Cart'}
-          </Button>
+          // <Button
+          //   className="keap-btn"
+          //   style={{ background: inCart ? 'var(--keap-primary)' : undefined }}
+          //   onClick={() => onAddToCart(product.id)}
+          //   disabled={inCart}
+          // >
+          //   {inCart ? 'Added to Cart' : 'Add to Cart'}
+          // </Button>
+          <KeapButton onClick={() => onAddToCart(product.id)} variant="outlined" sx={{ mt: 'auto' }}>Add to Cart</KeapButton>
         )}
         {inCart && (
           <Button
@@ -76,7 +79,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, inCart, onAddT
           style={{ borderRadius: 16, width: 220, height: 140, objectFit: 'cover', boxShadow: '0 2px 8px rgba(30, 125, 96, 0.08)' }}
         />
       </Box>
-    </Card>
+      {/* // </Card> */}
+    </>
   );
 };
 

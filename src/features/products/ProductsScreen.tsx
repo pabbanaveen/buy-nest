@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import './Products.css';
 import '../../styles/keap-theme.css';
-import { Box, Typography, useMediaQuery, useTheme, Grid, Avatar } from '@mui/material';
+import { Box, Typography, useMediaQuery, useTheme, Avatar } from '@mui/material';
 import { useCart } from '../../context/CartContext';
 import ProductDetailsPanel from './ProductDetailsPanel';
 import KeapCard from '../../components/KeapCard';
 import KeapButton from '../../components/KeapButton';
-import ProductListItem from './ProductListItem';
 import QuantityStepper from '../../components/QuantityStepper';
+import { ProductImageSlider } from '../../components/ProductImageSlider';
 
 const products = [
   {
@@ -96,183 +96,156 @@ const ProductsScreen: React.FC = () => {
   const isMdDown = useMediaQuery(theme.breakpoints.down('md'));
   const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
 
-  // Find the selected product (if any)
   const selected = selectedProduct ? products.find((p) => p.id === selectedProduct) : null;
+                
 
-  // Details panel JSX
-  let detailsPanel: React.ReactNode = null;
-  if (selectedProduct && selected) {
-    if (isSmDown) {
-      // Mobile: overlay panel
-      detailsPanel = (
+  // --- 1st Panel: Product List (scrollable) ---
+  const ProductListPanel = (
+    <Box
+      sx={{
+        width: { xs: '100%', md: 340 },
+        minWidth: 240,
+        maxWidth: 400,
+        bgcolor: 'var(--keap-card)',
+        borderRadius: 'var(--keap-border-radius)',
+        boxShadow: 'var(--keap-shadow)',
+        p: { xs: 1, md: 3 },
+        mr: { md: 3 },
+        height: { xs: 'auto', md: 'calc(100vh - 48px)' },
+        overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <Typography variant="h5" sx={{ color: 'var(--keap-primary)', fontWeight: 700, mb: 2, textAlign: 'center' }}>Products</Typography>
+      {products.map((product) => (
         <Box
+          key={product.id}
           sx={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            bgcolor: 'rgba(0,0,0,0.5)',
-            zIndex: 1300,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            display: 'flex', alignItems: 'center', gap: 2, mb: 2, p: 2,
+            borderRadius: 3,
+            bgcolor: selectedProduct === product.id ? 'var(--keap-primary-light)' : 'transparent',
+            border: selectedProduct === product.id ? '2px solid var(--keap-primary)' : '2px solid transparent',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
           }}
-          onClick={() => setSelectedProduct(null)}
+          onClick={() => setSelectedProduct(product.id)}
         >
-          <Box
-            sx={{
-              width: '95vw',
-              maxWidth: 400,
-              bgcolor: 'var(--keap-card)',
-              borderRadius: 'var(--keap-border-radius)',
-              boxShadow: 'var(--keap-shadow)',
-              p: 2,
-              position: 'relative',
-            }}
-            onClick={e => e.stopPropagation()}
-          >
-            <ProductDetailsPanel
-              product={selected}
-              inCart={!!cart.find((c) => c.id === selectedProduct)}
-              onAddToCart={(id) => {
-                const prod = products.find((p) => p.id === id);
-                if (prod) addToCart(prod);
-              }}
-              onClose={() => setSelectedProduct(null)}
-            />
+          <Avatar src={product.image} alt={product.name} sx={{ width: 48, height: 48, border: '2px solid #fff', boxShadow: selectedProduct === product.id ? '0 2px 8px rgba(30, 125, 96, 0.16)' : 'none' }} />
+          <Box sx={{ flex: 1 }}>
+            <Typography fontWeight={700} fontSize={18} sx={{ color: '#222b36' }}>{product.name}</Typography>
+            <Typography fontSize={15} sx={{ color: '#888', fontWeight: 500 }}>${product.price.toFixed(2)}</Typography>
           </Box>
+          {!!cart.find((c) => c.id === product.id) && (
+            <span className="keap-list-badge" style={{ background: 'var(--keap-primary)' }}>In Cart</span>
+          )}
         </Box>
-      );
-    } else {
-      // Desktop/tablet: side panel
-      detailsPanel = (
-        <Box sx={{ flex: 2, minWidth: 400, transition: 'all 0.3s cubic-bezier(.4,0,.2,1)' }}>
-          <ProductDetailsPanel
-            product={selected}
-            inCart={!!cart.find((c) => c.id === selectedProduct)}
-            onAddToCart={(id) => {
-              const prod = products.find((p) => p.id === id);
-              if (prod) addToCart(prod);
-            }}
-            onClose={() => setSelectedProduct(null)}
-          />
-        </Box>
-      );
-    }
-  }
+      ))}
+    </Box>
+  );
 
-  // Responsive: show grid or details panel
+  // --- Grid view when no product is selected (desktop only) ---
+  const ProductGridPanel = (
+    <Box
+      sx={{
+        width: '100%',
+        display: 'grid',
+        gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' },
+        gap: 3,
+        p: 3,
+        bgcolor: 'var(--keap-bg)',
+        overflowY: 'auto',
+        height: { xs: 'auto', md: 'calc(100vh - 48px)' },
+      }}
+    >
+      {products.map((product) => (
+        <KeapCard key={product.id} sx={{ p: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: 220 }}>
+          <Avatar src={product.image} alt={product.name} sx={{ width: 80, height: 80, mb: 2 }} />
+          <Typography fontWeight={700} fontSize={20} sx={{ color: 'var(--keap-primary)', mb: 1 }}>{product.name}</Typography>
+          <Typography fontSize={16} sx={{ color: '#888', fontWeight: 500, mb: 2 }}>${product.price.toFixed(2)}</Typography>
+          <div>
+            <KeapButton variant="outlined" onClick={() => setSelectedProduct(product.id)} sx={{ mt: 'auto' }}>View Details</KeapButton>
+
+            {!!cart.find((c) => c.id === product.id) && (
+              <span className="keap-list-badge" style={{ background: 'var(--keap-primary)' }}>In Cart</span>
+            )}
+          </div>
+        </KeapCard>
+      ))}
+    </Box>
+  );
+
+  // --- 2nd Panel: Main Image (not scrollable) ---
+  const ProductImagePanel = selectedProduct && selected ? (
+    <Box
+      sx={{
+        flex: 2,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minWidth: 0,
+        p: { xs: 1, md: 3 },
+      }}
+    >
+      <Box sx={{ width: '100%', maxWidth: 420, position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <ProductImageSlider images={[selected.image, selected.image, selected.image]} />
+      </Box>
+    </Box>
+  ) : null;
+
+  // --- 3rd Panel: Details (scrollable) ---
+  const ProductDetailsPanelBox = selectedProduct && selected ? (
+    <Box
+      sx={{
+        flex: 1,
+        minWidth: { xs: '100%', md: 340 },
+        maxWidth: { xs: '100%', md: 480 },
+        bgcolor: 'var(--keap-card)',
+        borderRadius: 'var(--keap-border-radius)',
+        boxShadow: 'var(--keap-shadow)',
+        border: '1px solid var(--keap-divider)',
+        p: { xs: 2, md: 3 },
+        overflowY: 'auto',
+        height: { xs: 'auto', md: '100vh' },
+      }}
+    >
+      <ProductDetailsPanel
+        product={selected}
+        inCart={!!cart.find((c) => c.id === selected.id)}
+        onAddToCart={(id) => {
+          const prod = products.find((p) => p.id === id);
+          if (prod) addToCart(prod);
+        }}
+        onClose={() => setSelectedProduct(null)}
+      />
+    </Box>
+  ) : null;
+
+  // --- Responsive Layout ---
   return (
     <Box
       className="keap-main-content"
       sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        gap: { xs: 2, md: 4 },
+        display: { xs: 'block', md: 'flex' },
+        flexDirection: 'row',
         minHeight: '100vh',
         bgcolor: 'var(--keap-bg)',
         position: 'relative',
-        overflow: 'hidden', // Prevent main content from scrolling
-        height: '100vh', // Ensure full viewport height
+        overflow: 'hidden',
+        height: '100vh',
+        p: { xs: 0, md: 2 },
       }}
     >
-      {/* Products List/Grid Panel */}
-      <Box
-        sx={{
-          flex: selectedProduct && !isSmDown ? '0 0 340px' : 1,
-          p: 2,
-          minWidth: selectedProduct && !isSmDown ? 320 : undefined,
-          maxWidth: selectedProduct && !isSmDown ? 340 : '100%',
-          width: selectedProduct && !isSmDown ? 340 : '100%',
-          bgcolor: 'var(--keap-card)',
-          borderRadius: 'var(--keap-border-radius)',
-          boxShadow: 'var(--keap-shadow)',
-          border: '1px solid var(--keap-divider)',
-          transition: 'all 0.3s cubic-bezier(.4,0,.2,1)',
-          overflowY: 'auto', // Only this panel scrolls
-          height: { xs: 'auto', md: 'calc(100vh - 48px)' }, // Adjust for navbar if needed
-          maxHeight: { xs: 'none', md: 'calc(100vh - 48px)' },
-        }}
-      >
-        <Typography
-          variant="h6"
-          className="keap-section-title"
-          sx={{ mb: 2, color: 'var(--keap-primary)', fontWeight: 700, letterSpacing: 0.5 }}
-        >
-          Products
-        </Typography>
-        {/* Show grid if no product selected, else show list (desktop/tablet) */}
-        {(!selectedProduct || isSmDown) ? (
-          <Grid container spacing={2} sx={{ width: '100%', m: 0 }}>
-            {products.map((product) => {
-              const cartItem = cart.find((c) => c.id === product.id);
-              return (
-                <Box key={product.id} sx={{ width: { xs: '100%', sm: '50%', md: '33.33%' }, display: 'flex', p: 1 }}>
-                  <KeapCard
-                    className={`product-card${selectedProduct === product.id ? ' keap-card-active' : ''}`}
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      minHeight: 220,
-                      width: '100%',
-                      cursor: 'pointer',
-                      transition: 'box-shadow 0.2s, background 0.2s',
-                      background: selectedProduct === product.id ? 'var(--keap-primary-light)' : undefined,
-                      boxShadow: selectedProduct === product.id ? '0 8px 32px rgba(30, 125, 96, 0.16)' : 'var(--keap-shadow)',
-                      p: 3,
-                    }}
-                    onClick={() => setSelectedProduct(product.id)}
-                  >
-                    <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Avatar src={product.image} alt={product.name} className="keap-list-avatar" />
-                        <Box>
-                          <Typography fontWeight={700} fontSize={20} sx={{ color: 'var(--keap-primary)', fontFamily: 'inherit', mb: 0.5 }}>{product.name}</Typography>
-                          <Typography variant="body2" sx={{ color: '#222b36', fontWeight: 500, fontFamily: 'inherit' }}>${product.price.toFixed(2)}</Typography>
-                        </Box>
-                      </Box>
-                      {cartItem ? (
-                        <Box onClick={e => e.stopPropagation()}>
-                          <QuantityStepper
-                            value={cartItem.qty}
-                            min={1}
-                            onChange={qty => {
-                              if (qty === 0) removeFromCart(product.id);
-                              else {
-                                // Remove all, then add qty times
-                                removeFromCart(product.id);
-                                for (let i = 0; i < qty; i++) addToCart(product);
-                              }
-                            }}
-                          />
-                        </Box>
-                      ) : (
-                        <KeapButton sx={{ fontWeight: 700, fontSize: 16, px: 3, py: 1, boxShadow: '0 2px 8px rgba(30, 125, 96, 0.08)', fontFamily: 'inherit' }} onClick={e => { e.stopPropagation(); addToCart(product); }}>Add to Cart</KeapButton>
-                      )}
-                    </Box>
-                  </KeapCard>
-                </Box>
-              );
-            })}
-          </Grid>
-        ) : (
-          <Box sx={{ width: '100%' }}>
-            {products.map((product) => (
-              <ProductListItem
-                key={product.id}
-                product={product}
-                isViewing={selectedProduct === product.id}
-                isInCart={!!cart.find((c) => c.id === product.id)}
-                onView={setSelectedProduct}
-              />
-            ))}
-          </Box>
-        )}
-      </Box>
-      {/* Product Details Panel (as overlay on mobile, side panel on desktop/tablet) */}
-      {detailsPanel}
+      {/* On desktop: show grid if no product selected, 3-panel if selected. On mobile: always stack. */}
+      {selectedProduct && !isMdDown ? (
+        <>
+          {ProductListPanel}
+          {ProductImagePanel}
+          {ProductDetailsPanelBox}
+        </>
+      ) : (
+        <>{ProductGridPanel}</>
+      )}
     </Box>
   );
 };

@@ -12,6 +12,8 @@ const product = {
   price: 99.99,
 };
 
+
+// depricated
 const ProductDetails: React.FC = () => {
   return (
     <>

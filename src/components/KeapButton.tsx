@@ -1,12 +1,12 @@
-import React from 'react';
-import { Button, ButtonProps } from '@mui/material';
+import React, { ElementType, ReactNode } from 'react';
+import { Button, ButtonProps, LinkProps } from '@mui/material';
 
-interface KeapButtonProps extends ButtonProps {
-  children: React.ReactNode;
-  sx?: ButtonProps['sx'];
+export interface KeapButtonProps extends Omit<ButtonProps, 'component' | 'href'> {
+  children: ReactNode;
   className?: string;
+  component?: ElementType; // allow React Router's `Link`
+  to?: string;             // for routing
 }
-
 const KeapButton: React.FC<KeapButtonProps> = ({ children, sx, className, ...rest }) => (
   <Button
     className={`keap-btn${className ? ' ' + className : ''}`}

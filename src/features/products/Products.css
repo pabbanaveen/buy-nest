@@ -1,8 +1,8 @@
 /* Keap-inspired color palette and layout improvements */
 :root {
-  --keap-primary: #1e7d60;
+  --keap-primary: #34A853;
   --keap-primary-light: #e6f4ef;
-  --keap-accent: #2e9b76;
+  --keap-accent: #34A853;
   --keap-bg: #f5f7fa;
   --keap-card: #fff;
   --keap-shadow: 0 4px 24px rgba(30, 125, 96, 0.08);

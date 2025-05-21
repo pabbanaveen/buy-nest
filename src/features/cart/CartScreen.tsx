@@ -6,6 +6,7 @@ import '../../styles/keap-theme.css';
 import { useCart } from '../../context/CartContext';
 import { Link as RouterLink } from 'react-router-dom';
 import QuantityStepper from '../../components/QuantityStepper';
+import KeapButton from '../../components/KeapButton';
 
 const Cart: React.FC = () => {
   const { cart, addToCart, removeFromCart } = useCart();
@@ -24,7 +25,9 @@ const Cart: React.FC = () => {
                   <Typography variant="body1" color="text.secondary" gutterBottom>
                     Your cart is empty.
                   </Typography>
-                  <Button className="keap-btn" component={RouterLink} to="/products">Go Shopping</Button>
+                  {/* <Button className="keap-btn" component={RouterLink} to="/products">Go Shopping</Button> */}
+                  <KeapButton variant="outlined" sx={{ mt: 'auto' }} component={RouterLink} to="/products">Go Shopping</KeapButton>
+                  
                 </Box>
               ) : (
                 cart.map((item) => (
@@ -62,7 +65,9 @@ const Cart: React.FC = () => {
                 <Typography>Subtotal</Typography>
                 <Typography fontWeight={700}>${subtotal.toFixed(2)}</Typography>
               </Box>
-              <Button className="keap-btn" fullWidth>Checkout</Button>
+              {/* <Button className="keap-btn" fullWidth>Checkout</Button> */}
+                  <KeapButton onClick={() => console.log(" checkout the products")} variant="outlined" sx={{ mt: 'auto' }}>Checkout</KeapButton>
+              
             </Card>
           </Box>
         </Grid>
